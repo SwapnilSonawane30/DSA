@@ -1,0 +1,202 @@
+#include<iostream>
+#include<fstream>
+#include<iomanip>
+#include<cstdio>
+
+using namespace std;
+
+class record{
+	private:
+		int roll;
+		char name[50];
+		char contact[10];
+		
+	public:
+		record(){
+			roll=5;
+		}
+		
+		void userIn();
+		void disFile();
+		void fileWrt(int n);
+		void filedlt(int s);
+		void fileRead();
+		void fileedit(int s);
+		void srch(int s);
+		void disOut();
+		
+}; 
+
+void record::disOut(){
+	cout<<endl<<roll<<"\t"<<name<<"\t"<<contact;
+}
+
+void record::userIn(){
+	cout<<"Enter roll no of student: ";
+	cin>>roll;
+	cout<<"Enter name of student: ";
+	cin>>name;
+	cout<<"Enter contact of student: ";
+	cin>>contact;
+}
+
+void record::fileWrt(int n){
+	fstream out;
+	out.open("RECORD.DAT",ios::binary | ios::out | ios::app);
+	record obj;
+	
+	for(int i=0;i<n;i++){
+		obj.userIn();
+		out.write(reinterpret_cast<char*>(&obj),sizeof(obj));
+	}
+	out.close();
+}
+
+void record::disFile()
+{
+	ifstream in;
+	in.open("RECORD.DAT",ios::binary | ios::in);
+	record obj;
+	in.seekg(0);
+	in.read(reinterpret_cast<char*>(&obj),sizeof(obj));
+	while(!in.eof()){
+		obj.disOut();
+		in.read(reinterpret_cast<char*>(&obj),sizeof(obj));
+	}
+	in.close();
+}
+void record::fileRead(){
+	ifstream in;
+	in.open("RECORD.DAT",ios::binary | ios::in | ios::app);
+	record obj;
+	in.seekg(0);
+	in.read(reinterpret_cast<char*>(&obj),sizeof(obj));
+	while(!in.eof()){
+		obj.disOut();
+		in.read(reinterpret_cast<char*>(&obj),sizeof(obj));
+	}
+	in.close();
+}
+
+void record::srch(int s){
+	ifstream in;
+	in.open("RECORD.DAT",ios::binary | ios::in | ios::app);
+	record obj;
+	in.seekg(0);
+	in.read(reinterpret_cast<char*>(&obj),sizeof(obj));
+	while(!in.eof()){
+		if(obj.roll==s){
+			cout<<"search found";
+			obj.disOut();
+			break;
+		}
+		in.read(reinterpret_cast<char*>(&obj),sizeof(obj));
+	}
+	in.close();
+}
+
+
+void record::filedlt(int s){
+	ifstream in;
+	in.open("RECORD.DAT",ios::binary | ios::in | ios::app);
+	record obj;
+	in.seekg(0);
+	
+	fstream out;
+	out.open("RECORD2.DAT",ios::binary | ios::out | ios::app);
+	in.read(reinterpret_cast<char*>(&obj),sizeof(obj));
+	while(!in.eof()){
+		if(obj.roll!=s){
+			out.write(reinterpret_cast<char*>(&obj),sizeof(obj));
+		}
+		in.read(reinterpret_cast<char*>(&obj),sizeof(obj));
+	}
+	remove("RECORD.DAT");
+	rename("RECORD2.DAT","RECORD.DAT");
+	out.close();
+}
+
+void record::fileedit(int s){
+	fstream obj1,obj2;
+	obj1.open("RECORD.DAT",ios::binary | ios::app | ios::in);
+	obj1.seekg(0);
+	
+	obj2.open("RECORD2.DAT",ios::binary | ios::app | ios::out);
+	record r;
+	obj1.read(reinterpret_cast<char*>(&r),sizeof(r));
+	
+	while(!obj1.eof()){
+		if(r.roll==s){
+			r.userIn();
+		}
+		obj2.write(reinterpret_cast<char*>(&r),sizeof(r));
+		obj1.read(reinterpret_cast<char*>(&r),sizeof(r));
+	}
+	remove("RECORD.DAT");
+	rename("RECORD2.DAT","RECORD.DAT");
+	obj2.close();
+	
+}
+
+int main(){
+	int n;
+	cout<<"Enter no of records to be inserted: ";
+	cin>>n;
+	record o;
+	o.fileWrt(n);
+	o.disFile();
+	int select;
+	do{
+		cout<<"\nMenu\n\t0. Display\n\t 1. New contact\n\t 2. Search\n\t 3. Delete \n\t 4. Edit\n\t 5. Exit\n"<<endl;
+		cout<<"select: ";
+		cin>>select;
+		switch (select){
+			case 0:
+				{
+					o.disFile();
+					break;
+				}
+				
+			case 1:{
+				o.fileWrt(1);
+				break;
+			}
+				
+				
+			case 2:{
+				int s=0;
+				cout<<"Enter roll no to search";
+				cin>>s;
+				o.srch(s);
+				break;
+			}
+				
+			case 3:{
+				int s=0;
+				cout<<"Enter roll no to delete";
+				cin>>s;
+				o.filedlt(s);
+				break;
+			}
+				
+				
+			case 4:{
+				int s=0;
+				cout<<"Enter rollno to edit";
+				cin>>s;
+				o.fileedit(s);
+				break;
+			}
+			
+			
+			case 5:{
+				return 0;
+			}
+				
+				
+				
+				
+		}
+	}while(1);
+	return 0;
+}
