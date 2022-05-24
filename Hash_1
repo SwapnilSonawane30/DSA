@@ -1,0 +1,178 @@
+#include<iostream>
+#define SIZE 10
+using namespace std;
+
+class client_DB;
+class client{
+	private:
+		int id;
+		string name;
+		long long int number;
+		int nextprob;
+	
+	public:
+		client(){
+			id=-1;
+			name="";
+			number=0;
+			nextprob=-1;
+		}
+		client(int id,string client_name,long long int client_number){
+			this->id=id;
+			this->name=name;
+			this->number=number;
+		}
+		
+		void getdata(){
+			cout<<"Enter client id: ";
+			cin>>id;
+			cout<<"Enter client name: ";
+			cin>>name;
+			cout<<"Enter client number: ";
+			cin>>number;
+		}
+		
+//		void showdata(){
+//			cout<<"Id of client is: "<<id<<endl;
+//			cout<<"Name of client is: "<<name<<endl;
+//			cout<<"Number of client is: "<<number<<endl;
+//		}
+		friend class client_DB;
+};
+
+class client_DB{
+	client c;
+	private:
+		
+		client HT[10];
+		int index;
+		
+	public:
+		int Hashfunction(client c){
+			int index=c.id%10;
+			return index;
+		}
+		
+		void insertrecord(){
+		c.getdata();
+        index = Hashfunction(c); // index of the element that we've to insert
+        if (HT[index].nextprob == -1)
+        {
+            cout << "No Collision Element Inserted at " << index << endl;
+            HT[index] = c;
+            HT[index].nextprob = (index + 1)%10; // when element is inserted in the hash table probe number will not remain -1
+        
+        }
+        else
+        {
+            cout << "collision occured" << endl;
+            int i = index;
+            while ((HT[i].nextprob)%10 != -1)
+            {
+                i = (HT[i].nextprob)%10; // here we have stored the index of last element which has some value other than -1
+            }
+
+            HT[i] = c;
+            HT[i].nextprob = (i + 1)%10; // increament the probe
+        }
+		}
+		
+		void show(){
+			cout<<"__________";
+			cout<<"\nIndex\tId\tName\tNumber\n";
+			cout<<"__________\n";
+			for(int i=0;i<SIZE;i++){
+				cout<<i<<"\t"<<HT[i].id<<"\t"<<HT[i].name<<"\t"<<HT[i].number<<endl;
+			}
+			cout<<"__________\n";
+		}
+		
+		void search(){
+			int flag=0;
+			int x;
+			cout<<"Entered Id to be searched: ";
+			cin>>x;
+			int a;
+			for(a=0;a<SIZE;a++){
+				if(HT[a].id==x){
+					flag=1;
+					break;
+				}
+			}
+			
+			if(flag==1){
+				cout<<"Client id found at"<<a<<"\n"<<"Name of client is: "<<HT[a].name<<"\n"<<"Id of clent is: "<<HT[a].id<<"\n"<<"Number of client is: "<<HT[a].number<<endl;
+			}else{
+				cout<<"Client Id Not Found "<<endl;
+			}	
+				
+			
+	
+		}
+		
+		void deleteBucket(){
+			int i,key;
+			cout<<"Enter key to be deleted: ";
+			cin>>key;
+			client bt;
+			bt.id=key;
+			i=Hashfunction(bt);
+			while(key!=HT[i].id&&HT[i].id!=-1){
+				i=HT[i].nextprob;
+			}
+			if(key==HT[i].id){
+				cout<<"Deleting: "<<HT[i].id;
+				HT[i].id=-1;
+				HT[i].name="";
+				HT[i].number=0;
+				HT[i].nextprob=-1;
+				return;
+			}
+			
+			cout<<"Client Id not found"<<endl;
+		}
+};
+int main(){
+
+ int y, s, choice;
+    bool flag = true;
+    client_DB c;
+    while(flag)
+    {
+        cout << "\n___LIST__\n";
+        cout << "\n1.Insert\n2.Search\n3.Delete\n4.Display\n5.Exit\n\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        switch (choice)
+        {
+        case 1:
+            c.insertrecord();
+            cout << endl;
+            break;
+        case 2:
+
+            c.search();
+            cout << endl;
+            break;
+        case 3:
+            c.deleteBucket();
+            cout << endl;
+            break;
+        case 4:
+            c.show();
+            cout << endl;
+            break;
+        case 5:
+            break;
+        }
+        char flag2;
+        cout << "Do you want to continue(y or n) :" << endl;
+        cin >> flag2;
+        if (flag2 == 'n')
+        {
+            flag = false;
+        }
+    }
+
+    return 0;
+}
