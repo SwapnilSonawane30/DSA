@@ -1,0 +1,97 @@
+#include<iostream>
+#include<queue>
+
+using namespace std;
+
+void bfs(int s,int g[10][10],int n){
+    int i=s,u;
+    int visited[10]={0,0,0,0,0,0,0,0,0,0};
+    queue<int>q;
+    visited[i]=1;
+    cout<<i<<" ";
+    q.push(i);
+    while(!q.empty()){
+        u=q.front();
+        q.pop();
+        for(int j=1;j<=n;j++){
+            if(g[u][j]==1&&visited[j]==0){
+                cout<<j<<" ";
+                visited[j]=1;
+                q.push(j);
+            }
+        }
+    }
+
+
+
+
+}
+void dfs(int g[10][10],int s,int n){
+    static int visited2[10]={0};
+    int i;
+    if(visited2[s]==0){
+        cout<<s<<" ";
+        visited2[s]=1;
+        for(int i=1;i<=n;i++){
+            if(g[s][i]==1&&visited2[i]==0){
+                dfs(g,i,n);
+
+            }
+        }
+    }
+    
+
+}
+
+
+
+
+
+
+int main(){
+
+    int g[10][10];
+    int m,n;
+    cout<<"Enter Number of Vertexes : ";
+    cin>>n;
+    cout<<"Enter Number of edges : ";
+    cin>>m;
+
+
+    for(int i=0;i<10;i++){
+        for(int j=0;j<10;j++){
+            g[i][j]=0;
+        }
+    }
+
+
+    for(int i=0;i<m;i++){
+        int u,v;
+        cin>>u>>v;
+        g[u][v]=1;
+        g[v][u]=1;
+    }
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            cout<<g[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+
+    int s;
+    cout<<"Enter Starting Vertex for bfs : ";
+    cin>>s;
+
+    cout<<"BFS Travesal of my Graph : ";
+    bfs(s,g,n);
+    cout<<"Starting vertex : ";
+    cin>>s;
+
+    cout<<endl;
+    cout<<"DFS Traversal of my Graph : ";
+    dfs(g,s,n);
+
+
+
+}
