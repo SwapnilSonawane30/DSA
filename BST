@@ -1,0 +1,289 @@
+#include<iostream>
+using namespace std;
+
+class BST;
+
+class Node{
+	private:
+		int data;
+		Node*left;
+		Node*right;
+	
+	public:
+		Node(){
+			data=0;
+			left=NULL;
+			right=NULL;
+		}
+		
+		Node(int value){
+			data=value;
+			left=NULL;
+			right=NULL;
+		}
+		
+	friend class BST;
+};
+
+class BST{
+	private:
+		Node*root;
+	
+	public:
+		BST(){
+			root=NULL;
+			cout<<"Empty search tree created"<<endl;
+		}
+		void insert(int value);
+		Node*search(Node*root,int TargetValue);
+		bool search(int TargetValue);
+		int minimum();
+		int LongestPath();
+		int LongestPath(Node*root);
+		void swap();
+		void swap(Node*root);
+		void inorderTraversal();
+		void inorderTraversal(Node*temp);
+		void preorderTraversal();
+		void preorderTraversal(Node*temp);
+		void postorderTraversal();
+		void postorderTraversal(Node*temp);
+		void menu();
+		int maximum();
+};
+
+int BST::minimum(){
+	Node*temp=root;
+	if(temp->left==NULL)
+	{
+		return temp->data;
+	}
+	while(temp->left!=NULL){
+		temp=temp->left;
+	}
+	return temp->data;
+}
+
+int BST::maximum(){
+	Node*temp=root;
+	if(temp->right==NULL)
+	{
+		return temp->data;
+	}
+	while(temp->left!=NULL){
+		temp=temp->right;
+	}
+	return temp->data;
+}
+
+void BST::insert(int value){
+	Node*pnew=new Node(value);
+	if(root==NULL){
+		root=pnew;
+		cout<<"Root Created"<<endl;
+	}
+	else{
+		Node*temp=root;
+		while(temp!=NULL){
+		
+		if(pnew->data<temp->data){
+			if(temp->left==NULL){
+				temp->left=pnew;
+				cout<<"New Value is inserted to the left of"<<temp->data<<endl;
+				break;
+			}
+			else{
+				temp=temp->left;
+			}
+		}
+		else if(pnew->data>temp->data){
+			if(temp->right==NULL){
+				temp->right=pnew;
+				cout<<"New Value is inserted to the right of"<<temp->data<<endl;
+				break;
+			}
+			else{
+				temp=temp->right;
+			}
+		}
+		else{
+			cout<<"Duplicated element Found"<<endl;
+			break;
+		}
+	}
+}
+}
+
+bool BST::search(int targetValue){
+	return search(targetValue);
+}
+
+Node*BST::search(Node*root,int targetValue){
+	if(root==NULL){
+		return NULL;
+	}
+	if(targetValue<root->data){
+		return search(root->left,targetValue);
+	}
+	else if(targetValue>root->data){
+		return search(root->right,targetValue);
+	}
+	else{
+		return root;
+	}
+}
+
+int BST::LongestPath(){
+	return LongestPath(root);
+}
+
+int BST::LongestPath(Node*root){
+	if(root==NULL){
+		return 0;
+	}
+	
+	if(root->left==NULL&&root->right==NULL){
+		return 1;
+	}
+	else{
+		int hl=LongestPath(root->left);
+		int hr=LongestPath(root->right);
+		
+		if(hl>hr){
+			return hl+1;
+		}
+		else{
+			return hr+1;
+		}
+	}
+}
+
+void BST::swap(){
+	return swap(root);
+}
+
+void BST::swap(Node*root){
+	Node*temp;
+	if(root->left!=NULL){
+		swap(root->left);
+	}
+	if(root->right!=NULL){
+		swap(root->right);
+	}
+	
+	temp=root->left;
+	root->left=root->right;
+	root->right=temp;
+	
+}
+
+void BST::inorderTraversal(){
+	cout<<"Inoreder of the Tree is: ";
+	inorderTraversal(root);
+}
+
+void BST::inorderTraversal(Node*temp){
+	if(temp!=NULL){
+		inorderTraversal(temp->left);
+		cout<<temp->data;
+		inorderTraversal(temp->right);
+	}
+}
+
+void BST::preorderTraversal(){
+	cout<<"Preorder of the Tree is: ";
+	preorderTraversal(root);
+}
+
+void BST::preorderTraversal(Node*temp){
+	if(temp!=NULL){
+		cout<<temp->data;
+		preorderTraversal(temp->left);
+		preorderTraversal(temp->right);
+	}
+}
+
+void BST::postorderTraversal(){
+	cout<<"Postorder of the Tree is: ";
+	postorderTraversal(root);
+}
+
+void BST::postorderTraversal(Node*temp){
+	if(temp!=NULL){
+		postorderTraversal(temp->left);
+		postorderTraversal(temp->right);
+		cout<<temp->data;
+	}
+}
+
+void BST::menu(){
+    int num,n,val,TargetValue;
+    cout<<"\n";
+    cout<<"\n1. Insert Node in Tree\n";
+    cout<<"2. Search Element in Tree \n";
+    cout<<"3. Node in Longest path\n";
+    cout<<"4. Minimum Number in Tree\n";
+    cout<<"5. Maximum Number in Tree\n";
+    cout<<"6. Swap (Mirror) the Tree\n";
+    cout<<"7. To Display Inorder Traversal of Tree\n";
+    cout<<"8. Exit\n";
+    cout<<"\n Enter Key : ";
+    cin>>num;
+    if (num==1){
+        cout<<"\nEnter number of Nodes :";
+        cin>>n;
+        for(int i=0;i<n;i++){
+            cout<<"\nEnter Value : ";
+            cin>>val;
+            insert(val);
+        }menu();
+    }
+    else if(num==2){
+        cout<<"Enter Element to Search :";
+        cin>>TargetValue;
+        if (search(TargetValue)==true){
+            cout<<"Element Present";
+        }
+        else{
+            cout<<"Element Not Present";
+        }menu();
+    }
+    else if(num==3){
+        cout<<"Number of Nodes in Longest Path is : ";
+        cout<<LongestPath();
+        menu();
+    }
+    else if(num==4){
+        cout<<"The Minimum Element in Tree is : ";
+        cout<<minimum();
+        menu();
+    }
+    else if(num==5){
+        cout<<"The Maximum Element in Tree is : ";
+        cout<<maximum();
+        menu();
+    }
+    else if(num==6){
+        swap();
+        cout<<"Tree is swapped";
+        menu();
+    }
+    else if(num==7){
+        cout<<"Inorder Traversal of list is : ";
+        inorderTraversal();
+        menu();
+    }
+    else if (num==8){
+        exit;
+    }
+    else{
+        cout<<"Wrong Input";
+        menu();
+    } 
+}
+
+int main() 
+{   BST bt;
+    bt.menu();
+    return 0;
+}
