@@ -1,76 +1,75 @@
-#include <iostream>
-#include <queue>
+#include<iostream>
 using namespace std;
 
-class Node{
-        
-public:
+class node{
+    public:
     int data;
-    Node* left;
-    Node* right;
-    bool isThreaded;
-    Node(int d){
-        this -> data = d;
-        this -> left = NULL;
-        this -> right = NULL;
+    node* left=NULL;
+    node* right=NULL;
+    bool isthreaded;
+    node(int data){
+        this->data=data;
+        this->left=NULL;
+        this->right=NULL;
+        // this->isthreaded=false;
     }
 };
-// 1 2 4 -1 -1 5 -1 -1 3 6 -1 -1 7 -1 -1
-Node* buildTree(Node* root){
-    cout << "Enter the data " << endl;
-    int data;
-    cin >> data;
-    root = new Node(data);
+class myfunctions{
+    public:
+        node* bintree(node*root);
+        node* threadmytree(node* root);
+        void inorder(node* root);
+};
 
-    if(data == -1){
+
+node* myfunctions:: bintree(node* root){
+    cout<<"Enter the data: "<<endl;
+    int data;
+    cin>>data;
+    root = new node(data);
+    if(data==-1){
         return NULL;
     }
-
-    cout << "Enter data for inserting in left "<< data << endl;
-    root -> left = buildTree(root -> left);
-    cout << "Enter data for inserting in right "<< data << endl;
-    root -> right = buildTree(root -> right);
+    cout<<"Enter data for inserting in left: "<<data<<endl;
+    root->left=bintree(root->left);
+    cout<<"Enter data for inserting in right: "<<data<<endl;
+    root->right=bintree(root->right);
     return root;
 }
 
-Node* threadedTree(Node* root){
-    if(root == NULL){
-        return NULL;
-    }
-    if(root -> left == NULL && root ->right == NULL){
-        return root;
-    }
-    // find precedors
-    // child in left subtree
-    if(root -> left != NULL){
-        Node* l = threadedTree(root -> left);
-        l -> right = root;
-        l -> isThreaded = true;
-    }
 
-    if(root -> right == NULL){
+
+node* myfunctions::threadmytree(node* root){
+    if(root==NULL){
+        return NULL;    
+    }
+    if(root->right==NULL&&root->left==NULL){
         return root;
     }
-    // child in right subtree
-    return threadedTree(root -> right);
+    if(root->left!=NULL){
+        node* temp=threadmytree(root->left);
+        temp->right=root; 
+        temp->isthreaded=true;
+    }
+    if(root->right==NULL){
+        return root;
+    }
+    return threadmytree(root->right);
 }
-
-Node* leftMost(Node* root)
+node* leftMost(node* root)
 {
 	while (root != NULL && root->left != NULL)
 		root = root->left;
 	return root;
 }
-
-void inorder(Node* root){ 
+void myfunctions::inorder(node* root){ 
     if(root == NULL){
         return;
     }
-    Node* temp = leftMost(root);
-
-    while(temp != NULL){
+    node* temp = leftMost(root);
+    while(temp != NULL){ 
         cout << temp -> data <<" ";
-        if(temp -> isThreaded){
+        if(temp -> isthreaded){
             temp = temp -> right;
         }
         else{
@@ -79,11 +78,33 @@ void inorder(Node* root){
     }
 }
 
+
 int main(){
-    Node* root = NULL;
-    root = buildTree(root);
-    threadedTree(root);
-    cout << "Inorder traversal "<< endl;
-    inorder(root);
-    return 0;
-}
+    node* root=NULL;
+    int your_choice;
+    myfunctions f1;
+    while(1){
+        cout<<"\n1. For Creation of bintree\n2. Thread Your tree\n3. Print Inorder\n4. Exit"<<endl;
+        cout<<"Enter Your Choice : ";
+        cin>>your_choice;
+        switch(your_choice){
+            case 1:
+                root=f1.bintree(root);
+                break;
+            case 2:
+                f1.threadmytree(root);
+                break;
+            case 3:
+                cout<<"Inorder trversal of mytree is : ";
+                f1.inorder(root);
+                cout<<endl;
+                break;
+            case 4:
+                cout<<"Programme exited successfully";
+                exit(1);
+
+        }
+
+
+    }
+    }
