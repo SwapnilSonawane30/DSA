@@ -1,0 +1,136 @@
+#include<iostream>
+#include<fstream>
+#include<stdlib.h>
+#include<conio.h>
+#include<string.h>
+using namespace std;
+class student{
+	private:
+		int roll;
+		char name[50];
+		char branch[3];
+		float marks;
+		char grade;
+		
+	public:
+		void getdata(){
+			cout<<"Roll no: ";
+			cin>>roll;
+			cout<<"Name: ";
+			cin>>name;
+			cout<<"Branch: ";
+			cin>>branch;
+			cout<<"Marks: ";
+			cin>>marks;
+			if(marks>75){
+				grade='A';
+			}
+			else if(marks>60){
+				grade='B';
+			}
+			else if(marks>50){
+				grade='C';
+			}
+			else if(marks>40){
+				grade='D';
+			}
+			else{
+				grade='F';
+			}
+		}
+		
+		void putdata(){
+			cout<<"Roll no: "<<roll<<"\tName: "<<name<<"\tBranch: "<<branch<<"\tMarks: "<<marks<<"\tGrade: "<<grade;
+		}
+		
+		int getrno(){
+			return roll;
+		}
+		
+		void modify();
+}stud1,stud;
+
+void student::modify(){
+	cout<<"Roll no: "<<roll<<"\tName: "<<name<<"\tBranch: "<<branch<<"\tMarks: "<<marks<<"\tGrade: "<<grade<<endl;
+	cout<<"Enter New Details: "<<endl;
+	
+	char nam[20]="",br[3]="";
+	float mks;
+	
+	cout<<"New Name (Enter '.' to retain old one):";
+	cin>>nam;
+	cout<<"New Branch (Enter '.' to retain old one):";
+	cin>>br;
+	cout<<"New Marks (Enter -1 to retain old one): ";
+	cin>>mks;
+	if(strcmp(nam,".")!=0){
+		strcpy(name,nam);
+	}
+	if(strcmp(br,".")!=0){
+		strcpy(branch,br);
+	}
+	marks=mks;
+			if(marks>75){
+				grade='A';
+			}
+			else if(marks>60){
+				grade='B';
+			}
+			else if(marks>50){
+				grade='C';
+			}
+			else if(marks>40){
+				grade='D';
+			}
+			else{
+				grade='F';
+			}
+}
+
+int main(){
+//	clrscr();
+	fstream fio("marks1.txt",ios::binary | ios::out | ios::in);
+	char answer='y';
+	while(answer=='y'||answer=='Y'){
+		stud1.getdata();
+		fio.write((char*)&stud1,sizeof(stud1));
+		cout<<"Record added to the file\n";
+		cout<<"Want to add more(y or n): ";
+		cin>>answer;
+	}
+//	clrscr();
+	int rno;
+	int pos;
+	char found='f';
+	cout<<"Enter the roll no of studnet whose record is to be modified: ";
+	cin>>rno;
+	fio.seekg(0);
+	while(!fio.eof()){
+		pos=fio.tellg();
+		fio.read((char*)&stud1,sizeof(stud1));
+		if(stud1.getrno()==rno){
+			stud1.modify();
+			fio.seekg(pos);
+			fio.write((char*)&stud1,sizeof(stud1));
+			
+			found='t';
+			break;
+		}
+	}
+	
+	if(found=='f'){
+		cout<<"\nRecord not found in the file";
+		cout<<"Press any key to exit: ";
+		getch();
+		exit(2);
+	}
+	fio.seekg(0);
+	cout<<"Now the file contains:\n";
+	while(!fio.eof()){
+		fio.read((char*)&stud,sizeof(stud));
+		stud.putdata();
+	}
+	fio.close();
+	getch();
+	return 0;
+}
