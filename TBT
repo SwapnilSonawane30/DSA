@@ -1,0 +1,89 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+class Node{
+        
+public:
+    int data;
+    Node* left;
+    Node* right;
+    bool isThreaded;
+    Node(int d){
+        this -> data = d;
+        this -> left = NULL;
+        this -> right = NULL;
+    }
+};
+// 1 2 4 -1 -1 5 -1 -1 3 6 -1 -1 7 -1 -1
+Node* buildTree(Node* root){
+    cout << "Enter the data " << endl;
+    int data;
+    cin >> data;
+    root = new Node(data);
+
+    if(data == -1){
+        return NULL;
+    }
+
+    cout << "Enter data for inserting in left "<< data << endl;
+    root -> left = buildTree(root -> left);
+    cout << "Enter data for inserting in right "<< data << endl;
+    root -> right = buildTree(root -> right);
+    return root;
+}
+
+Node* threadedTree(Node* root){
+    if(root == NULL){
+        return NULL;
+    }
+    if(root -> left == NULL && root ->right == NULL){
+        return root;
+    }
+    // find precedors
+    // child in left subtree
+    if(root -> left != NULL){
+        Node* l = threadedTree(root -> left);
+        l -> right = root;
+        l -> isThreaded = true;
+    }
+
+    if(root -> right == NULL){
+        return root;
+    }
+    // child in right subtree
+    return threadedTree(root -> right);
+}
+
+Node* leftMost(Node* root)
+{
+	while (root != NULL && root->left != NULL)
+		root = root->left;
+	return root;
+}
+
+void inorder(Node* root){ 
+    if(root == NULL){
+        return;
+    }
+    Node* temp = leftMost(root);
+
+    while(temp != NULL){
+        cout << temp -> data <<" ";
+        if(temp -> isThreaded){
+            temp = temp -> right;
+        }
+        else{
+            temp = leftMost(temp -> right);
+        }
+    }
+}
+
+int main(){
+    Node* root = NULL;
+    root = buildTree(root);
+    threadedTree(root);
+    cout << "Inorder traversal "<< endl;
+    inorder(root);
+    return 0;
+}
