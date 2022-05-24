@@ -1,0 +1,107 @@
+#include<iostream>
+using namespace std;
+
+class book;
+class Node{
+	private:
+		int count;
+		char name[10];
+		Node*child[10];
+	friend class book;
+}*root;
+
+class book{
+	public:
+		void createbook();
+		void displaybook(Node*root);
+	book(){
+		root=NULL;
+	}
+};
+
+void book::createbook(){
+	int tchapters,tsections,tsubsections,i,j,k;
+	root=new Node();
+	cout<<"Enter Name Of Book";
+	cout<<root->name;
+	cout<<"Enter Number of Chapters";
+	cin>>tchapters;
+	root->count=tchapters;
+	for(i=0;i<tchapters;i++){
+		root->child[i]=new Node();
+		cout<<"Enter Name of chapter "<<i+1<<endl;
+		cin>>root->child[i]->name;
+		cout<<"Enter Number of sections in chapter"<<root->child[i]->name;
+		cin>>tsections;
+		root->child[i]->count=tsections;
+		for(j=0;j<tsections;j++){
+			root->child[i]->child[j]=new Node();
+			cout<<"Enter Name of Subsection"<<j+1;
+			cin>>root->child[i]->child[j]->name;
+			cout<<"Enter Number of Subsections in section "<<root->child[i]->child[j]->name;
+			cin>>tsubsections;
+			root->child[i]->child[j]->count=tsubsections;
+			for(k=0;k<tsubsections;k++){
+				root->child[i]->child[j]->child[k]=new Node();
+				cout<<"Enter Name Of subsection "<<k+1;
+				cin>>root->child[i]->child[j]->child[k]->name;
+			}
+			
+		}
+		
+	}
+}
+
+void book::displaybook(Node*root){
+	int i,j,k;
+	if(root!=NULL){
+	
+	cout<<"________BOOK HIERARCHY_______"<<endl;
+	cout<<"Book Name"<<root->name<<endl;
+	for(i=0;i<root->count;i++)
+	{
+		cout<<"Chapter "<<i+1<<endl;
+		cout<<root->child[i]->name<<endl;
+		cout<<"Sections "<<endl;
+		for(j=0;j<root->child[i]->count;j++){
+			cout<<"Sections "<<j+1<<endl;
+			cout<<root->child[i]->child[j]->name<<endl;
+			cout<<"Subsections "<<endl;
+			for(k=0;k<root->child[i]->child[j]->count;k++){
+				cout<<"Subsections "<<endl;
+				cout<<root->child[i]->child[j]->child[k]->name<<endl;
+			}
+		}
+	}
+}	
+}
+
+
+int main(){
+	book b1;
+	int yourchoice;
+	while(1){
+		cout<<"1. For Creation"<<endl;
+		cout<<"2. For Display"<<endl;
+		cout<<"3. Quit"<<endl;
+		cout<<"Enter Your Choice"<<endl;
+		cin>>yourchoice;
+		
+		switch(yourchoice)
+		{
+			case 1:
+				b1.createbook();
+				break;
+				
+			case 2:
+				b1.displaybook(root);
+				break;
+				
+			case 3:
+				exit(1);
+				
+			default:
+				cout<<"Wrong Choice"<<endl;
+		}
+	}
+}
